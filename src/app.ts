@@ -7,7 +7,7 @@ import express, {
   urlencoded,
 } from "express";
 import helmet from "helmet";
-import exampleRouter from "./routes/example.router";
+import productRouter from "./routes/product.router";
 
 const app = express();
 
@@ -18,8 +18,8 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 
 // routes
-app.get("/", (_req, res) => res.send("Welcome to My API"));
-app.use("/examples", exampleRouter);
+app.get("/", (_req, res) => res.send("Welcome to Media ID API"));
+app.use("/api/product", productRouter);
 
 // error
 app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
