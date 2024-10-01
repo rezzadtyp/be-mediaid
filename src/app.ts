@@ -8,12 +8,13 @@ import express, {
 } from "express";
 import helmet from "helmet";
 import productRouter from "./routes/product.router";
+import { allowedOrigins } from "./config";
 
 const app = express();
 
 // configure
 app.use(helmet());
-app.use(cors({ origin: [/http:\/\/localhost/] }));
+app.use(cors({ origin: allowedOrigins }));
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
