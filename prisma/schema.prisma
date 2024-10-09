@@ -8,15 +8,82 @@ datasource db {
 }
 
 model Product {
-  id          String    @id @default(uuid())
+  id          String      @id @default(uuid())
   name        String
-  description String    @db.VarChar(255)
+  description String      @db.VarChar(255)
   price       Int
   features    String[]
-  best_seller Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  best_seller Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   deletedAt   DateTime?
+  OrderItem   OrderItem[]
 
   @@map("products")
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  orderNumber String
+  totalAmount Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  status      OrderStatus @default(WAITING_FOR_PAYMENT)
+  phoneNumber String
+  OrderItem   OrderItem[]
+  Payment     Payment?
+
+  @@map("orders")
+}
+
+enum OrderStatus {
+  WAITING_FOR_PAYMENT @map("WAITING_FOR_PAYMENT")
+  ORDER_PROCESSED     @map("ORDER_PROCESSED")
+  ORDER_CANCELLED     @map("ORDER_CANCELLED")
+  COMPLETED           @map("COMPLETED")
+}
+
+model OrderItem {
+  id        Int    @id @default(autoincrement())
+  qty       Int
+  total     Int
+  price     Int
+  orderId   String
+  productId String
+
+  orders   Order   @relation(fields: [orderId], references: [id])
+  products Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+model Payment {
+  id              Int           @id @default(autoincrement())
+  invoiceNumber   String
+  paymentStatus   PaymentStatus @default(PENDING)
+  paymentMethod   PaymentMethod
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  amount          Int
+  snapToken       String?
+  snapRedirectUrl String?
+
+  orderId String @unique
+
+  orders Order @relation(fields: [orderId], references: [id])
+
+  @@map("payments")
+}
+
+enum PaymentStatus {
+  COMPLETED @map("COMPLETED")
+  CANCELLED @map("CANCELLED")
+  DENIED    @map("DENIED")
+  EXPIRED   @map("EXPIRED")
+  PENDING   @map("PENDING")
+}
+
+enum PaymentMethod {
+  QRIS            @map("QRIS")
+  VIRTUAL_ACCOUNT @map("VIRTUAL_ACCOUNT")
 }

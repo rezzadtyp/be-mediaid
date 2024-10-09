@@ -17,3 +17,5 @@ export const allowedOrigins = process.env.NODE_ENV === 'production'
 export const PORT = process.env.PORT || 8000;
 export const DATABASE_URL = process.env.DATABASE_URL || '';
 export const NEXT_BASE_URL = process.env.NEXT_BASE_URL;
+export const MIDTRANS_CLIENT_KEY = process.env.MIDTRANS_PUBLIC_CLIENT as string;
+export const MIDTRANS_SERVER_KEY = process.env.MIDTRANS_SECRET as string;
